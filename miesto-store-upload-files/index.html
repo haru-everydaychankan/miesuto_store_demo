@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f7f2">
+<meta name="description" content="ミエスト 店舗向け在庫管理デモアプリ">
+<title>ミエスト｜店舗管理</title>
+<style>
+:root{--green:#286b53;--green2:#e5f2e9;--ink:#23332c;--muted:#78857e;--bg:#f5f7f2;--line:#e7ece6;--white:#fff;--orange:#e5a04d;--red:#d96b62;--shadow:0 18px 55px rgba(31,57,43,.12)}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#eaf1e8,#f8f5eb);font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",Meiryo,sans-serif;color:var(--ink);min-height:100vh;padding:22px}
+button,input,select{font:inherit}button{cursor:pointer}
+.layout{max-width:1180px;margin:auto;min-height:calc(100vh - 44px);display:grid;grid-template-columns:250px 1fr;background:var(--bg);border:1px solid #e1e9df;border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+aside{background:#fff;border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column}
+.logo{display:flex;align-items:center;gap:11px;padding:0 10px 30px}.logo-icon{width:42px;height:42px;border-radius:15px;background:var(--green);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:900}.logo b{font-size:23px;letter-spacing:.02em}.logo small{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;margin-top:3px}
+.store-chip{margin:0 5px 25px;padding:13px;border-radius:15px;background:#f2f6f1;display:flex;gap:10px;align-items:center}.store-avatar{width:35px;height:35px;border-radius:12px;background:#dcecdf;display:grid;place-items:center;font-size:18px}.store-chip b{font-size:13px;display:block}.store-chip small{font-size:11px;color:var(--muted)}
+nav{display:grid;gap:7px}.navbtn{border:0;background:transparent;color:#65736b;text-align:left;padding:13px 14px;border-radius:13px;font-weight:700;display:flex;align-items:center;gap:12px}.navbtn span{font-size:18px;width:22px;text-align:center}.navbtn.active{background:var(--green2);color:var(--green)}
+.aside-bottom{margin-top:auto;padding:15px 10px 0;color:var(--muted);font-size:11px;line-height:1.7}
+main{padding:30px 34px;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:28px}.eyebrow{font-size:11px;color:var(--green);font-weight:800;letter-spacing:.12em}.topbar h1{font-size:27px;margin:5px 0 0}.datebox{background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 14px;color:#68756d;font-size:12px}
+.page{display:none}.page.active{display:block}.welcome{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}.welcome h2{font-size:19px;margin:0 0 5px}.welcome p{font-size:12px;color:var(--muted);margin:0}.primary{background:var(--green);color:#fff;border:0;border-radius:12px;padding:12px 16px;font-weight:800;box-shadow:0 5px 12px #286b5322}.secondary{background:#fff;color:var(--green);border:1px solid #d9e6dc;border-radius:11px;padding:9px 12px;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}.stat{background:#fff;border:1px solid var(--line);border-radius:17px;padding:17px}.stat-top{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:700}.stat-icon{width:31px;height:31px;border-radius:10px;background:#eff6ef;display:grid;place-items:center;font-size:16px}.stat strong{display:block;font-size:27px;margin-top:12px;letter-spacing:-.04em}.stat small{color:var(--muted);font-size:11px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:18px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}.panel-head h3{margin:0;font-size:15px}.panel-head small{color:var(--muted);font-size:11px}
+.alert{display:flex;align-items:center;gap:12px;padding:12px 13px;background:#fff8ed;border:1px solid #f3e5cb;border-radius:13px;margin-bottom:9px}.alert .dot{width:9px;height:9px;border-radius:50%;background:var(--orange);flex:none}.alert b{font-size:12px}.alert small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.alert button{margin-left:auto;border:0;background:transparent;color:var(--green);font-size:11px;font-weight:800}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}.search{flex:1;min-width:170px;border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:#fff}.filter{border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fff;color:#536159}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:580px}th{text-align:left;font-size:10px;color:#8a958e;font-weight:800;padding:11px 10px;border-bottom:1px solid var(--line)}td{padding:13px 10px;border-bottom:1px solid #f0f2ef;font-size:12px}tr:last-child td{border-bottom:0}.product{display:flex;align-items:center;gap:10px}.thumb{width:38px;height:38px;border-radius:12px;background:#f1f5ee;display:grid;place-items:center;font-size:20px}.product b{display:block;font-size:12px}.product small{color:var(--muted);font-size:10px}.qty{display:flex;align-items:center;gap:8px}.qty button{width:27px;height:27px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--green);font-weight:900}.qty strong{min-width:20px;text-align:center;font-size:13px}.status{display:inline-flex;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:800}.in{background:#e8f4e9;color:#34734d}.low{background:#fff2dc;color:#a66c1e}.out{background:#fdecea;color:#b64f48}.edit{border:0;background:transparent;color:var(--green);font-weight:800;font-size:11px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px}.field label{font-size:11px;font-weight:800;color:#65736b}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:#fff}.field.full{grid-column:1/-1}.form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:17px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.info-card{background:#f8faf7;border:1px solid var(--line);border-radius:14px;padding:16px}.info-card small{color:var(--muted);font-size:11px}.info-card b{display:block;margin-top:6px;font-size:14px}
+.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%) translateY(20px);background:#24372d;color:#fff;padding:12px 18px;border-radius:12px;font-size:12px;opacity:0;pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-back{position:fixed;inset:0;background:#17251d77;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal-back.show{display:flex}.modal{width:min(480px,100%);background:#fff;border-radius:20px;padding:22px;box-shadow:var(--shadow)}.modal h3{margin:0 0 17px}.modal-close{float:right;border:0;background:#f2f5f1;border-radius:9px;width:30px;height:30px}
+.mobile-head{display:none}
+@media(max-width:800px){body{padding:0;background:var(--bg)}.layout{display:block;min-height:100vh;border:0;border-radius:0}.mobile-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;background:#fff;border-bottom:1px solid var(--line)}.mobile-head .logo{padding:0}.mobile-head .logo-icon{width:35px;height:35px}.mobile-head .logo b{font-size:20px}aside{display:none}main{padding:23px 17px 90px}.topbar{margin-bottom:22px}.topbar h1{font-size:23px}.datebox{display:none}.stats{grid-template-columns:repeat(2,1fr);gap:10px}.stat{padding:14px}.stat strong{font-size:24px}.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 5px calc(8px + env(safe-area-inset-bottom));z-index:3}.bottom-nav button{border:0;background:transparent;color:#7a867e;font-size:10px;display:grid;gap:3px;justify-items:center;font-weight:700}.bottom-nav button span{font-size:19px}.bottom-nav button.active{color:var(--green)}.welcome{align-items:flex-start}.welcome .primary{padding:10px 12px;font-size:11px}.panel{padding:15px}.form-grid,.info-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="mobile-head"><div class="logo"><div class="logo-icon">M</div><div><b>ミエスト</b><small>STORE MANAGEMENT</small></div></div><span style="font-size:11px;color:#78857e">店舗管理デモ</span></div>
+  <aside>
+    <div class="logo"><div class="logo-icon">M</div><div><b>ミエスト</b><small>STORE MANAGEMENT</small></div></div>
+    <div class="store-chip"><div class="store-avatar">🏪</div><div><b id="sideStore">ミエスト中央店</b><small>店舗アカウント</small></div></div>
+    <nav>
+      <button class="navbtn active" data-page="dashboard"><span>⌂</span>ダッシュボード</button>
+      <button class="navbtn" data-page="inventory"><span>▤</span>在庫管理</button>
+      <button class="navbtn" data-page="products"><span>＋</span>商品管理</button>
+      <button class="navbtn" data-page="store"><span>⚙</span>店舗情報</button>
+    </nav>
+    <div class="aside-bottom">これは発表・操作確認用のデモです。<br>入力内容はこのブラウザー内に保存されます。</div>
+  </aside>
+  <main>
+    <header class="topbar"><div><div class="eyebrow">MIesto / STORE</div><h1 id="pageTitle">ダッシュボード</h1></div><div class="datebox" id="today"></div></header>
+    <section class="page active" id="dashboard">
+      <div class="welcome"><div><h2>おかえりなさい！</h2><p>本日の店舗の在庫状況を確認しましょう。</p></div><button class="primary" onclick="showPage('inventory')">在庫を更新する　→</button></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-top">登録商品数 <span class="stat-icon">📦</span></div><strong id="totalCount">0</strong><small>管理中の商品</small></div>
+        <div class="stat"><div class="stat-top">在庫あり <span class="stat-icon">✓</span></div><strong id="inCount">0</strong><small>在庫がある商品</small></div>
+        <div class="stat"><div class="stat-top">残りわずか <span class="stat-icon">⚠</span></div><strong id="lowCount">0</strong><small>在庫5個以下</small></div>
+        <div class="stat"><div class="stat-top">在庫なし <span class="stat-icon">－</span></div><strong id="outCount">0</strong><small>補充が必要な商品</small></div>
+      </div>
+      <div class="panel"><div class="panel-head"><h3>在庫アラート</h3><small>補充が必要な商品</small></div><div id="alerts"></div></div>
+      <div class="panel"><div class="panel-head"><h3>最近の在庫状況</h3><button class="edit" onclick="showPage('inventory')">すべて見る →</button></div><div class="table-wrap"><table><thead><tr><th>商品</th><th>在庫数</th><th>状態</th></tr></thead><tbody id="recentRows"></tbody></table></div></div>
+    </section>
+    <section class="page" id="inventory">
+      <div class="welcome"><div><h2>商品の在庫を管理</h2><p>数量を変更すると、状態が自動で更新されます。</p></div><button class="secondary" onclick="showPage('products')">商品を追加 ＋</button></div>
+      <div class="panel"><div class="toolbar"><input class="search" id="search" placeholder="商品名で検索..." oninput="renderInventory()"><select class="filter" id="categoryFilter" onchange="renderInventory()"><option value="すべて">すべてのカテゴリー</option><option>食品</option><option>飲料</option><option>日用品</option><option>文房具</option></select><select class="filter" id="statusFilter" onchange="renderInventory()"><option value="すべて">すべての状態</option><option value="在庫あり">在庫あり</option><option value="残りわずか">残りわずか</option><option value="在庫なし">在庫なし</option></select></div><div class="table-wrap"><table><thead><tr><th>商品</th><th>カテゴリー</th><th>在庫数</th><th>在庫状態</th><th>操作</th></tr></thead><tbody id="inventoryRows"></tbody></table></div></div>
+    </section>
+    <section class="page" id="products">
+      <div class="welcome"><div><h2>商品を登録・編集</h2><p>店舗で取り扱う商品を管理できます。</p></div></div>
+      <div class="panel"><div class="panel-head"><h3 id="productFormTitle">新しい商品を追加</h3><small>デモ用の商品データ</small></div><form id="productForm"><div class="form-grid">
+        <div class="field"><label>商品名</label><input id="pName" required placeholder="例：ミネラルウォーター"></div>
+        <div class="field"><label>カテゴリー</label><select id="pCategory"><option>食品</option><option>飲料</option><option>日用品</option><option>文房具</option></select></div>
+        <div class="field"><label>在庫数</label><input id="pStock" type="number" min="0" value="10" required></div>
+        <div class="field"><label>商品アイコン（絵文字）</label><input id="pEmoji" maxlength="4" value="📦" placeholder="📦"></div>
+        </div><div class="form-actions"><button type="reset" class="secondary" onclick="resetProductForm()">入力をクリア</button><button class="primary" type="submit">商品を登録する</button></div></form></div>
+      <div class="panel"><div class="panel-head"><h3>登録済み商品</h3><small id="productTotal"></small></div><div class="table-wrap"><table><thead><tr><th>商品</th><th>カテゴリー</th><th>在庫数</th><th>操作</th></tr></thead><tbody id="productRows"></tbody></table></div></div>
+    </section>
+    <section class="page" id="store">
+      <div class="welcome"><div><h2>店舗情報</h2><p>店舗の基本情報を設定します。</p></div></div>
+      <div class="panel"><div class="panel-head"><h3>基本情報</h3><small>デモ用の店舗設定</small></div><form id="storeForm"><div class="form-grid">
+        <div class="field full"><label>店舗名</label><input id="storeName" value="ミエスト中央店" required></div>
+        <div class="field"><label>住所</label><input id="storeAddress" value="東京都サンプル区1-2-3"></div>
+        <div class="field"><label>営業時間</label><input id="storeHours" value="10:00〜20:00"></div>
+        <div class="field"><label>電話番号（架空）</label><input id="storePhone" value="03-0000-0000"></div>
+        <div class="field"><label>店舗紹介</label><input id="storeDesc" value="毎日の買い物をもっと便利に。"></div>
+      </div><div class="form-actions"><button class="primary" type="submit">店舗情報を保存</button></div></form></div>
+      <div class="panel"><div class="panel-head"><h3>デモ環境について</h3></div><div class="info-grid"><div class="info-card"><small>データ保存先</small><b>このブラウザー内</b></div><div class="info-card"><small>客側アプリとの連携</small><b>未接続（単独デモ）</b></div><div class="info-card"><small>在庫状態の判定</small><b>0個：在庫なし / 1〜5個：残りわずか</b></div><div class="info-card"><small>アカウント認証</small><b>デモのため未実装</b></div></div></div>
+    </section>
+  </main>
+</div>
+<div class="bottom-nav">
+  <button class="active" data-page="dashboard"><span>⌂</span>ホーム</button><button data-page="inventory"><span>▤</span>在庫</button><button data-page="products"><span>＋</span>商品</button><button data-page="store"><span>⚙</span>店舗</button>
+</div>
+<div class="modal-back" id="editModal"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button><h3>商品情報を編集</h3><div class="form-grid"><div class="field full"><label>商品名</label><input id="eName"></div><div class="field"><label>カテゴリー</label><select id="eCategory"><option>食品</option><option>飲料</option><option>日用品</option><option>文房具</option></select></div><div class="field"><label>アイコン</label><input id="eEmoji"></div></div><div class="form-actions"><button class="secondary" onclick="deleteEditing()">商品を削除</button><button class="primary" onclick="saveEdit()">変更を保存</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const initial=[
+{id:1,name:"緑茶 600ml",cat:"飲料",stock:0,emoji:"🍵"},{id:2,name:"ミネラルウォーター",cat:"飲料",stock:3,emoji:"💧"},{id:3,name:"ポテトチップス",cat:"食品",stock:24,emoji:"🥔"},{id:4,name:"チョコレート",cat:"食品",stock:5,emoji:"🍫"},{id:5,name:"キッチンペーパー",cat:"日用品",stock:12,emoji:"🧻"},{id:6,name:"ボールペン",cat:"文房具",stock:0,emoji:"🖊️"},{id:7,name:"ノート A5",cat:"文房具",stock:18,emoji:"📓"},{id:8,name:"ハンドソープ",cat:"日用品",stock:4,emoji:"🧴"}
+];
+let products=JSON.parse(localStorage.getItem("miestoStoreProducts")||"null")||initial;
+let store=JSON.parse(localStorage.getItem("miestoStoreInfo")||"null")||{name:"ミエスト中央店",address:"東京都サンプル区1-2-3",hours:"10:00〜20:00",phone:"03-0000-0000",desc:"毎日の買い物をもっと便利に。"};
+let editingId=null;
+const $=id=>document.getElementById(id);
+function status(n){return n===0?"在庫なし":n<=5?"残りわずか":"在庫あり"}
+function statusClass(n){return n===0?"out":n<=5?"low":"in"}
+function persist(){localStorage.setItem("miestoStoreProducts",JSON.stringify(products));localStorage.setItem("miestoStoreInfo",JSON.stringify(store));}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2200)}
+function showPage(p){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===p));document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===p));$("pageTitle").textContent=({dashboard:"ダッシュボード",inventory:"在庫管理",products:"商品管理",store:"店舗情報"})[p];if(p==="dashboard")renderDashboard();if(p==="inventory")renderInventory();if(p==="products")renderProducts();window.scrollTo(0,0)}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function row(p,withOps=true){return `<tr><td><div class="product"><div class="thumb">${p.emoji}</div><div><b>${escapeHtml(p.name)}</b><small>商品ID：${p.id}</small></div></div></td>${withOps?`<td>${p.cat}</td><td><div class="qty"><button onclick="changeStock(${p.id},-1)">−</button><strong>${p.stock}</strong><button onclick="changeStock(${p.id},1)">＋</button></div></td><td><span class="status ${statusClass(p.stock)}">${status(p.stock)}</span></td><td><button class="edit" onclick="openEdit(${p.id})">編集</button></td>`:`<td><strong>${p.stock}個</strong></td><td><span class="status ${statusClass(p.stock)}">${status(p.stock)}</span></td>`}</tr>`}
+function renderDashboard(){let low=products.filter(p=>p.stock>0&&p.stock<=5),out=products.filter(p=>p.stock===0);$("totalCount").textContent=products.length;$("inCount").textContent=products.filter(p=>p.stock>5).length;$("lowCount").textContent=low.length;$("outCount").textContent=out.length;let alerts=[...out,...low];$("alerts").innerHTML=alerts.length?alerts.map(p=>`<div class="alert"><span class="dot" style="background:${p.stock===0?'var(--red)':'var(--orange)'}"></span><div><b>${escapeHtml(p.name)}</b><small>${p.stock===0?'在庫がありません。補充を確認してください。':`残り${p.stock}個です。`}</small></div><button onclick="showPage('inventory')">在庫を見る →</button></div>`).join(""):`<p style="font-size:12px;color:var(--muted)">現在、補充が必要な商品はありません。</p>`;$("recentRows").innerHTML=products.slice(0,5).map(p=>row(p,false)).join("")}
+function renderInventory(){let q=$("search").value.toLowerCase(),cat=$("categoryFilter").value,st=$("statusFilter").value;let list=products.filter(p=>p.name.toLowerCase().includes(q)&&(cat==="すべて"||p.cat===cat)&&(st==="すべて"||status(p.stock)===st));$("inventoryRows").innerHTML=list.length?list.map(p=>row(p)).join(""):`<tr><td colspan="5" style="text-align:center;color:#89958e;padding:25px">該当する商品がありません。</td></tr>`}
+function renderProducts(){$("productTotal").textContent=`${products.length}件`; $("productRows").innerHTML=products.map(p=>`<tr><td><div class="product"><div class="thumb">${p.emoji}</div><b>${escapeHtml(p.name)}</b></div></td><td>${p.cat}</td><td>${p.stock}個</td><td><button class="edit" onclick="openEdit(${p.id})">編集</button></td></tr>`).join("")}
+function changeStock(id,d){let p=products.find(x=>x.id===id);if(!p)return;p.stock=Math.max(0,p.stock+d);persist();renderInventory();renderDashboard();toast(`${p.name} の在庫を ${p.stock}個 に更新しました`)}
+function resetProductForm(){$("productFormTitle").textContent="新しい商品を追加"}
+$("productForm").addEventListener("submit",e=>{e.preventDefault();products.push({id:Date.now(),name:$("pName").value.trim(),cat:$("pCategory").value,stock:Math.max(0,Number($("pStock").value)),emoji:$("pEmoji").value||"📦"});persist();e.target.reset();$("pStock").value=10;$("pEmoji").value="📦";renderProducts();renderDashboard();toast("商品を登録しました")});
+function openEdit(id){let p=products.find(x=>x.id===id);if(!p)return;editingId=id;$("eName").value=p.name;$("eCategory").value=p.cat;$("eEmoji").value=p.emoji;$("editModal").classList.add("show")}
+function closeModal(){$("editModal").classList.remove("show")}
+function saveEdit(){let p=products.find(x=>x.id===editingId);if(!p)return;p.name=$("eName").value.trim()||p.name;p.cat=$("eCategory").value;p.emoji=$("eEmoji").value||"📦";persist();closeModal();renderProducts();renderInventory();renderDashboard();toast("商品情報を更新しました")}
+function deleteEditing(){if(!confirm("この商品を削除しますか？"))return;products=products.filter(p=>p.id!==editingId);persist();closeModal();renderProducts();renderInventory();renderDashboard();toast("商品を削除しました")}
+$("storeForm").addEventListener("submit",e=>{e.preventDefault();store={name:$("storeName").value,address:$("storeAddress").value,hours:$("storeHours").value,phone:$("storePhone").value,desc:$("storeDesc").value};persist();$("sideStore").textContent=store.name;toast("店舗情報を保存しました")});
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("sideStore").textContent=store.name;$("storeName").value=store.name;$("storeAddress").value=store.address;$("storeHours").value=store.hours;$("storePhone").value=store.phone;$("storeDesc").value=store.desc;
+$("today").textContent=new Intl.DateTimeFormat("ja-JP",{year:"numeric",month:"long",day:"numeric",weekday:"short"}).format(new Date());
+renderDashboard();
+</script>
+</body></html>
